@@ -72,6 +72,13 @@ bool isEqual(BinaryTree<T> &tree, vector<T> const &v2, _order order) {
     return (pair.first == end && pair.second == v2.end());
 }
 
+TEST_CASE("check normal order = inorder") {
+    BinaryTree<int> tree = create_dummy<int>();
+
+    auto pair = std::mismatch(tree.begin_inorder(), tree.end_inorder(), tree.begin());
+    CHECK(((pair.first == tree.end_inorder()) && (pair.second == tree.end())));
+}
+
 TEST_CASE("TEST binary on ints simple") {
     srand(time(nullptr));
     // create the following tree on i = 0
