@@ -7,6 +7,7 @@ using namespace ariel;
 #include <ctime>
 #include <functional>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -58,6 +59,7 @@ BinaryTree<T> create_dummy(int adder = 0) {
 
 template <typename T>
 bool isEqual(BinaryTree<T> &tree, vector<T> const &v2, _order order) {
+    // This function checks if a given tree order is equal to some vector.
     auto end = tree.end_preorder();
     if (order == _order::inorder) {
         end = tree.end_inorder();
@@ -89,7 +91,7 @@ TEST_CASE("TEST binary on ints simple") {
     //             20       23
 
     // inorder : 4, 10, 5, 11, 2, 1, 3
-    vector<int> inorder = {4, 10, 5, 11, 2, 1, 3};
+    vector<int> inorder = {4, 2, 20, 10, 5, 11, 23, 1, 3};
     //postorder : 4, 20, 10, 23, 11, 5, 2, 3, 1
     vector<int> postorder = {4, 20, 10, 23, 11, 5, 2, 3, 1};
     //preorder : 1, 2, 4, 5, 10, 20, 11, 23, 3
@@ -124,9 +126,11 @@ TEST_CASE("TEST binary transofmations") {
     };
 
     // Test inorder preorder postorder with match.
+    // We change the values on the tree by random value everywhere.
+    // but here we are using the transform algorithm.
     for (int i = 1; i < 15; i++) {
         // inorder : 4, 10, 5, 11, 2, 1, 3
-        vector<int> inorder = {4, 10, 5, 11, 2, 1, 3};
+        vector<int> inorder = {4, 2, 20, 10, 5, 11, 23, 1, 3};
         //postorder : 4, 20, 10, 23, 11, 5, 2, 3, 1
         vector<int> postorder = {4, 20, 10, 23, 11, 5, 2, 3, 1};
         //preorder : 1, 2, 4, 5, 10, 20, 11, 23, 3
@@ -179,6 +183,8 @@ TEST_CASE("Test random permutation") {
             }
         }
 
+        // looks like the checking permutation on the default iterator is impossible
+        // so we copying tree values into a list and then comparing the two vectors.
         vector<double> copied(tsize);
         unsigned int j = 0;
         for (auto it = tree.begin_preorder(); it != tree.end_preorder(); ++it, j++) {
@@ -200,6 +206,9 @@ TEST_CASE("Test random permutation") {
     }
 }
 
+// define a string class
+// we define it in order to have an easy + int or + double operator.
+// iam just lazy.
 class myString {
 public:
     string val;
@@ -212,6 +221,11 @@ public:
         return *this;
     }
 
+    myString &operator+(int other) {
+        val += to_string(other);
+        return *this;
+    }
+
     myString &operator+(double other) {
         val += to_string(other);
         return *this;
@@ -219,6 +233,11 @@ public:
 
     bool operator==(const myString &other) {
         return this->val == other.val;
+    }
+
+    // need to define this for maps...
+    friend bool operator<(const myString &t, const myString &other) {
+        return t.val < other.val;
     }
 
     friend std::ostream &operator<<(std::ostream &os, const myString &c) {
@@ -236,18 +255,39 @@ TEST_CASE("test castume class") {
     //             20       23
 
     // inorder : 4, 10, 5, 11, 2, 1, 3
-    vector<myString> inorder = {4, 10, 5, 11, 2, 1, 3};
+    vector<myString> inorder = {4, 2, 20, 10, 5, 11, 23, 1, 3};
     //postorder : 4, 20, 10, 23, 11, 5, 2, 3, 1
     vector<myString> postorder = {4, 20, 10, 23, 11, 5, 2, 3, 1};
     //preorder : 1, 2, 4, 5, 10, 20, 11, 23, 3
     vector<myString> preorder = {1, 2, 4, 5, 10, 20, 11, 23, 3};
 
-    // auto print = [](myString n) { cout << ", " << n; };
+    auto print = [](myString n) { cout << ", " << n; };
     // for_each(preorder.begin(), preorder.end(), print);
 
     // Test inorder preorder postorder with match.
-    for (int i = 0; i < 10; i++) {
-        BinaryTree<myString> tree = create_dummy<myString>(i);
+    BinaryTree<myString> tree = create_dummy<myString>();
+    for (int i = 0; i < 5; i++) {
+        int randval = NextInt();
+
+        // you can uncomment this to see what should be vs you'r output.
+
+        // for_each(inorder.begin(), inorder.end(), print);
+        // cout << endl;
+        // for_each(tree.begin(), tree.end(), print);
+        // cout << endl
+        //      << endl;
+
+        // // for_each(postorder.begin(), postorder.end(), print);
+        // // cout << endl;
+        // for_each(tree.begin_postorder(), tree.end_postorder(), print);
+        // cout << endl
+        //      << endl;
+
+        // // for_each(preorder.begin(), preorder.end(), print);
+        // // cout << endl;
+        // for_each(tree.begin_preorder(), tree.end_preorder(), print);
+        // cout << endl
+        //      << endl;
 
         CHECK(isEqual(tree, inorder, _order::inorder));
 
@@ -255,9 +295,17 @@ TEST_CASE("test castume class") {
 
         CHECK(isEqual(tree, postorder, _order::postorder));
 
-        transform(inorder.begin(), inorder.end(), inorder.begin(), [](myString val) { return val + 1; });
-        transform(preorder.begin(), preorder.end(), preorder.begin(), [](myString val) { return val + 1; });
-        transform(postorder.begin(), postorder.end(), postorder.begin(), [](myString val) { return val + 1; });
+        auto f = [](myString val, int add) {
+            return val + add;
+        };
+
+        // here we are creating a transformation function in order to update the tree and the vector.
+        auto f2 = bind(f, placeholders::_1, randval);
+
+        transform(inorder.begin(), inorder.end(), inorder.begin(), f2);
+        transform(preorder.begin(), preorder.end(), preorder.begin(), f2);
+        transform(postorder.begin(), postorder.end(), postorder.begin(), f2);
+        transform(tree.begin(), tree.end(), tree.begin(), f2);
     }
 }
 
@@ -272,6 +320,7 @@ TEST_CASE("throws") {
     for (int j = 0; j < 30; j++) {
         BinaryTree<myString> tree2;
         tree2.add_root(0);
+        // build a random tree with only even nodes.
         for (int i = 2; i < max_val; i += 2) {
             if (RandomBool()) {
                 tree2.add_left(i - 2, i);
@@ -280,6 +329,8 @@ TEST_CASE("throws") {
             }
         }
 
+        // pick random number if even the should not trow error,
+        // otherwise odd, not in tree throw error.
         int val = (unsigned int)rand() % max_val;
         if (val % 2 == 0) {
             CHECK_NOTHROW(tree2.add_left(val, 1));
@@ -287,4 +338,171 @@ TEST_CASE("throws") {
             CHECK_THROWS(tree2.add_right(val, 1));
         }
     }
+}
+
+TEST_CASE("override values test") {
+    srand(time(nullptr));
+    // create the following tree on i = 0
+    //                    1
+    //              2          3
+    //         4        5
+    //               10   11
+    //             20       23
+
+    // if true that means the value is a left child
+    map<int, bool> is_left_child{
+        {2, true},
+        {3, false},
+        {4, true},
+        {5, false},
+        {10, true},
+        {20, true},
+        {23, false},
+        {11, false},
+    };
+
+    // this maps values to parent index in the tree_vals ( by the vector )
+    map<int, unsigned int> pindex{
+        {2, 0},
+        {3, 0},
+        {4, 1},
+        {5, 1},
+        {10, 4},
+        {20, 5},
+        {23, 6},
+        {11, 4},
+    };
+
+    vector<int> tree_vals = {1, 2, 3, 4, 5, 10, 11, 20, 23};
+    // inorder : 4, 10, 5, 11, 2, 1, 3
+    vector<int> inorder = {4, 2, 20, 10, 5, 11, 23, 1, 3};
+    //postorder : 4, 20, 10, 23, 11, 5, 2, 3, 1
+    vector<int> postorder = {4, 20, 10, 23, 11, 5, 2, 3, 1};
+    //preorder : 1, 2, 4, 5, 10, 20, 11, 23, 3
+    vector<int> preorder = {1, 2, 4, 5, 10, 20, 11, 23, 3};
+
+    // Test inorder preorder postorder with match.
+    BinaryTree<int> tree = create_dummy<int>();
+    const unsigned int size = tree_vals.size();
+    for (int i = 0; i < 25; i++) {
+        unsigned int index = ((unsigned int)rand() % (size - 1)) + 1;
+        int new_val = (unsigned int)rand() % 10;
+        // avoid duplicates!
+        new_val += (i + 3) * 10;
+
+        int old_val = tree_vals[index];
+        replace(postorder.begin(), postorder.end(), old_val, new_val);
+        replace(preorder.begin(), preorder.end(), old_val, new_val);
+        replace(inorder.begin(), inorder.end(), old_val, new_val);
+
+        unsigned int parent_index = pindex[old_val];
+        pindex[new_val] = pindex[old_val];
+        is_left_child[new_val] = is_left_child[old_val];
+
+        // cout << "index : " << index << ", old val :" << old_val << " old parent : " << parent_index << endl;
+        // cout << "putting new val : " << new_val << endl;
+
+        tree_vals[index] = new_val;
+
+        CHECK_THROWS(tree.add_left(0, new_val));
+        CHECK_THROWS(tree.add_left(new_val, 0));
+
+        if (is_left_child[new_val]) {
+            CHECK_NOTHROW(tree.add_left(tree_vals[parent_index], new_val));
+        } else {
+            CHECK_NOTHROW(tree.add_right(tree_vals[parent_index], new_val));
+        }
+        //CHECK_NOTHROW(tree.)
+
+        CHECK(isEqual(tree, inorder, _order::inorder));
+        CHECK(isEqual(tree, preorder, _order::preorder));
+        CHECK(isEqual(tree, postorder, _order::postorder));
+    }
+
+    tree.add_root(333);
+    CHECK_THROWS(tree.add_left(1, 33));
+}
+
+TEST_CASE("override values test but with myString") {
+    srand(time(nullptr));
+    // create the following tree on i = 0
+    //                    1
+    //              2          3
+    //         4        5
+    //               10   11
+    //             20       23
+
+    // if true that means the value is a left child
+    map<myString, bool> is_left_child{
+        {2, true},
+        {3, false},
+        {4, true},
+        {5, false},
+        {10, true},
+        {20, true},
+        {23, false},
+        {11, false},
+    };
+
+    // this maps values to parent index in the tree_vals ( by the vector )
+    map<myString, unsigned int> pindex{
+        {myString{1}, 0},
+        {myString{3}, 0},
+        {myString{4}, 1},
+        {myString{5}, 1},
+        {myString{10}, 4},
+        {myString{20}, 5},
+        {myString{23}, 6},
+        {myString{11}, 4},
+    };
+
+    vector<myString> tree_vals = {1, 2, 3, 4, 5, 10, 11, 20, 23};
+    // inorder : 4, 10, 5, 11, 2, 1, 3
+    vector<myString> inorder = {4, 2, 20, 10, 5, 11, 23, 1, 3};
+    //postorder : 4, 20, 10, 23, 11, 5, 2, 3, 1
+    vector<myString> postorder = {4, 20, 10, 23, 11, 5, 2, 3, 1};
+    //preorder : 1, 2, 4, 5, 10, 20, 11, 23, 3
+    vector<myString> preorder = {1, 2, 4, 5, 10, 20, 11, 23, 3};
+
+    // Test inorder preorder postorder with match.
+    BinaryTree<myString> tree = create_dummy<myString>();
+    const unsigned int size = tree_vals.size();
+    for (int i = 0; i < 25; i++) {
+        unsigned int index = ((unsigned int)rand() % (size - 1)) + 1;
+        int new_vali = (unsigned int)rand() % 10;
+        new_vali += (i + 3) * 10;
+        myString new_val{new_vali};
+        // avoid duplicates!
+
+        myString old_val = tree_vals[index];
+        replace(postorder.begin(), postorder.end(), old_val, new_val);
+        replace(preorder.begin(), preorder.end(), old_val, new_val);
+        replace(inorder.begin(), inorder.end(), old_val, new_val);
+
+        unsigned int parent_index = pindex[old_val];
+        pindex[new_val] = pindex[old_val];
+        is_left_child[new_val] = is_left_child[old_val];
+
+        // cout << "index : " << index << ", old val :" << old_val << " old parent : " << parent_index << endl;
+        // cout << "putting new val : " << new_val << endl;
+
+        tree_vals[index] = new_val;
+
+        CHECK_THROWS(tree.add_left(0, new_val));
+        CHECK_THROWS(tree.add_left(new_val, 0));
+
+        if (is_left_child[new_val]) {
+            CHECK_NOTHROW(tree.add_left(tree_vals[parent_index], new_val));
+        } else {
+            CHECK_NOTHROW(tree.add_right(tree_vals[parent_index], new_val));
+        }
+        //CHECK_NOTHROW(tree.)
+
+        CHECK(isEqual(tree, inorder, _order::inorder));
+        CHECK(isEqual(tree, preorder, _order::preorder));
+        CHECK(isEqual(tree, postorder, _order::postorder));
+    }
+
+    tree.add_root(333);
+    CHECK_THROWS(tree.add_left(1, 33));
 }

@@ -10,11 +10,17 @@ class BinaryTree {
 private:
     typedef struct _BinaryTree::BinaryTreeNode<T> BinaryTreeNode;
     typedef class _BinaryTree::iterator<T> iterator;
-
-public:
+    typedef enum _BinaryTree::iter_order iter_order;
     BinaryTreeNode *root;
 
+public:
     BinaryTree() : root(nullptr) {
+    }
+
+    ~BinaryTree() {
+        // if (root != nullptr) {
+        //     delete root;
+        // }
     }
 
     BinaryTree &add_root(T root);
@@ -23,37 +29,37 @@ public:
     BinaryTree &add_right(T parent, T item);
 
     iterator begin_preorder() {
-        return iterator();
+        return iterator(iter_order::preorder, root);
     }
 
     iterator begin_postorder() {
-        return iterator();
+        return iterator(iter_order::postorder, root);
     }
 
     iterator begin_inorder() {
-        return iterator();
+        return iterator(iter_order::inorder, root);
     }
 
     iterator end_preorder() {
-        return iterator();
+        return iterator(iter_order::preorder);
     }
 
     iterator end_postorder() {
-        return iterator();
+        return iterator(iter_order::postorder);
     }
 
     iterator end_inorder() {
-        return iterator();
+        return iterator(iter_order::inorder);
     }
 
     iterator begin() {
         // return &(m_first->m_value);
-        return iterator{nullptr};
+        return iterator{iter_order::inorder, root};
     }
 
     iterator end() {
         // return nullptr;
-        return iterator{nullptr};
+        return iterator{iter_order::inorder, nullptr};
     }
 
     friend std::ostream &operator<<(std::ostream &os, const BinaryTree &c) {
