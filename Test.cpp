@@ -560,17 +560,39 @@ TEST_CASE("test deep copy and operator=") {
         CHECK(isEqual(tree4, postorder, _order::postorder) == false);
         tree4 = *tree;
 
+        // change values of the original again.
+        transform(tree->begin(), tree->end(), tree->begin(), f2);
+
         CHECK(isEqual(tree4, inorder, _order::inorder));
         CHECK(isEqual(tree4, preorder, _order::preorder));
         CHECK(isEqual(tree4, postorder, _order::postorder));
         delete tree;
         //tree2.~BinaryTree();
 
+        tree3 = tree4;
+
         CHECK(isEqual(tree3, inorder, _order::inorder));
         CHECK(isEqual(tree3, preorder, _order::preorder));
         CHECK(isEqual(tree3, postorder, _order::postorder));
 
         ///
+        CHECK(isEqual(tree4, inorder, _order::inorder));
+        CHECK(isEqual(tree4, preorder, _order::preorder));
+        CHECK(isEqual(tree4, postorder, _order::postorder));
+
+        // transform tree4
+        transform(tree4.begin(), tree4.end(), tree4.begin(), f2);
+
+        // check that tree3 didn't change.
+        CHECK(isEqual(tree3, inorder, _order::inorder));
+        CHECK(isEqual(tree3, preorder, _order::preorder));
+        CHECK(isEqual(tree3, postorder, _order::postorder));
+
+        // update the check's and see if it mach tree4.
+        transform(inorder.begin(), inorder.end(), inorder.begin(), f2);
+        transform(preorder.begin(), preorder.end(), preorder.begin(), f2);
+        transform(postorder.begin(), postorder.end(), postorder.begin(), f2);
+
         CHECK(isEqual(tree4, inorder, _order::inorder));
         CHECK(isEqual(tree4, preorder, _order::preorder));
         CHECK(isEqual(tree4, postorder, _order::postorder));
