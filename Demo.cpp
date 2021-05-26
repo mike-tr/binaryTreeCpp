@@ -23,6 +23,7 @@ int main() {
         .add_right(1, 3) // Now 3 is the right child of 1
         .add_left(1, 2); // Now 2 is the left child of 1, instead of 9 (the children of 9 remain in place)
 
+    cout << "print tree : " << endl;
     cout << tree_of_ints << endl; /* Prints the tree in a reasonable format. For example:
         1
         |--------|

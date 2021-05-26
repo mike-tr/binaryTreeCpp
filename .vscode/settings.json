@@ -58,6 +58,11 @@
         "xtr1common": "cpp",
         "deque": "cpp",
         "list": "cpp",
-        "xhash": "cpp"
+        "xhash": "cpp",
+        "functional": "cpp",
+        "random": "cpp",
+        "unordered_map": "cpp",
+        "queue": "cpp",
+        "stack": "cpp"
     }
 }

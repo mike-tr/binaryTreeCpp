@@ -506,3 +506,69 @@ TEST_CASE("override values test but with myString") {
     tree.add_root(333);
     CHECK_THROWS(tree.add_left(1, 33));
 }
+
+TEST_CASE("test deep copy and operator=") {
+    srand(time(nullptr));
+    // create the following tree on i = 0
+    //                    1
+    //              2          3
+    //         4        5
+    //               10   11
+    //             20       23
+
+    // inorder : 4, 10, 5, 11, 2, 1, 3
+    vector<myString> inorder = {4, 2, 20, 10, 5, 11, 23, 1, 3};
+    //postorder : 4, 20, 10, 23, 11, 5, 2, 3, 1
+    vector<myString> postorder = {4, 20, 10, 23, 11, 5, 2, 3, 1};
+    //preorder : 1, 2, 4, 5, 10, 20, 11, 23, 3
+    vector<myString> preorder = {1, 2, 4, 5, 10, 20, 11, 23, 3};
+
+    auto print = [](myString n) { cout << ", " << n; };
+    // for_each(preorder.begin(), preorder.end(), print);
+
+    // Test inorder preorder postorder with match.
+    BinaryTree<myString> tree = create_dummy<myString>();
+    for (int i = 0; i < 5; i++) {
+        int randval = NextInt();
+
+        // create a pointer copy of tree.
+        // then we will detroy this tree
+        // but its copies should still work as intended!
+        BinaryTree<myString> *tree2 = new BinaryTree<myString>(tree);
+
+        CHECK(isEqual(*tree2, inorder, _order::inorder));
+        CHECK(isEqual(*tree2, preorder, _order::preorder));
+        CHECK(isEqual(*tree2, postorder, _order::postorder));
+
+        BinaryTree<myString> tree3 = *tree2;
+        BinaryTree<myString> tree4;
+        tree4 = *tree2;
+
+        CHECK(isEqual(tree4, inorder, _order::inorder));
+        CHECK(isEqual(tree4, preorder, _order::preorder));
+        CHECK(isEqual(tree4, postorder, _order::postorder));
+        delete tree2;
+        //tree2.~BinaryTree();
+
+        CHECK(isEqual(tree3, inorder, _order::inorder));
+        CHECK(isEqual(tree3, preorder, _order::preorder));
+        CHECK(isEqual(tree3, postorder, _order::postorder));
+
+        ///
+        CHECK(isEqual(tree4, inorder, _order::inorder));
+        CHECK(isEqual(tree4, preorder, _order::preorder));
+        CHECK(isEqual(tree4, postorder, _order::postorder));
+
+        auto f = [](myString val, int add) {
+            return val + add;
+        };
+
+        // here we are creating a transformation function in order to update the tree and the vector.
+        auto f2 = bind(f, placeholders::_1, randval);
+
+        transform(inorder.begin(), inorder.end(), inorder.begin(), f2);
+        transform(preorder.begin(), preorder.end(), preorder.begin(), f2);
+        transform(postorder.begin(), postorder.end(), postorder.begin(), f2);
+        transform(tree.begin(), tree.end(), tree.begin(), f2);
+    }
+}

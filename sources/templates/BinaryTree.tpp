@@ -45,4 +45,5 @@ BinaryTree<T> &BinaryTree<T>::add_right(T parent, T item) {
     } // prints: 4 2 5 1 3
     throw std::invalid_argument{"the parent value doesnt exist in the tree..."};
 } // namespace ariel
+
 } // namespace ariel

@@ -20,9 +20,6 @@ struct BinaryTreeNode {
         if (left != nullptr) {
             delete left;
         }
-
-        // delete left;
-        // delete right;
     }
 };
 } // namespace _BinaryTree
