@@ -7,6 +7,9 @@ namespace ariel {
 
 template <typename T>
 BinaryTree<T> &BinaryTree<T>::add_root(T root) {
+    if (this->root != nullptr) {
+        delete this->root;
+    }
     this->root = new BinaryTreeNode{root};
     return *this;
 }

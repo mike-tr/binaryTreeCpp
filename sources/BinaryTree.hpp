@@ -13,14 +13,43 @@ private:
     typedef enum _BinaryTree::iter_order iter_order;
     BinaryTreeNode *root;
 
+    void copy_tree(BinaryTreeNode &target, const BinaryTreeNode &source) {
+        if (source.left != nullptr) {
+            target.left = new BinaryTreeNode{source.left->m_value};
+            copy_tree(*target.left, *source.left);
+        }
+
+        if (source.right != nullptr) {
+            target.right = new BinaryTreeNode{source.right->m_value};
+            copy_tree(*target.right, *source.right);
+        }
+    }
+
 public:
     BinaryTree() : root(nullptr) {
     }
 
+    BinaryTree(const BinaryTree &tree) {
+        root = new BinaryTreeNode{tree.root->m_value};
+        copy_tree(*root, *tree.root);
+    }
+
+    BinaryTree &operator=(const BinaryTree &tree) {
+        if (this == &tree) {
+            return *this;
+        }
+        if (root != nullptr) {
+            delete root;
+        }
+        root = new BinaryTreeNode{tree.root->m_value};
+        copy_tree(*root, *tree.root);
+        return *this;
+    }
+
     ~BinaryTree() {
-        // if (root != nullptr) {
-        //     delete root;
-        // }
+        if (root != nullptr) {
+            delete root;
+        }
     }
 
     BinaryTree &add_root(T root);

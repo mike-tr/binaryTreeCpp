@@ -52,7 +52,6 @@ int main() {
         cout << element << " ";
     } // prints: 4 2 5 1 3
     cout << endl;
-
     // The same should work with other types, e.g. with strings:
 
     BinaryTree<string> tree_of_strings;

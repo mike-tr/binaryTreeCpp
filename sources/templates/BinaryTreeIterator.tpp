@@ -1,6 +1,6 @@
 #pragma once
 // #include "../BinaryTree.hpp"
-#include "templates/BinaryTreeNode.tpp"
+#include "BinaryTreeNode.tpp"
 #include <iostream>
 #include <vector>
 

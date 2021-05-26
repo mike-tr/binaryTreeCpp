@@ -12,6 +12,7 @@ struct BinaryTreeNode {
     BinaryTreeNode(const T &val) : m_value(val), parent(nullptr), left(nullptr), right(nullptr) {}
 
     ~BinaryTreeNode() {
+        //std::cout << "destroyed : " << m_value << std::endl;
         // destroy all nodes downwards
         if (right != nullptr) {
             delete right;
@@ -19,6 +20,7 @@ struct BinaryTreeNode {
         if (left != nullptr) {
             delete left;
         }
+
         // delete left;
         // delete right;
     }
