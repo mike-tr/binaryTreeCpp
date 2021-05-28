@@ -1,9 +1,10 @@
 #pragma once
 
 #include "templates/BinaryTreeInorderIterator.tpp"
-#include "templates/BinaryTreeIterator.tpp"
+//#include "templates/BinaryTreeIterator.tpp"
 #include "templates/BinaryTreeNode.tpp"
 #include "templates/BinaryTreePostorderIterator.tpp"
+#include "templates/BinaryTreePreorderIterator.tpp"
 #include <iostream>
 #include <queue>
 
@@ -22,10 +23,11 @@ template <typename T>
 class BinaryTree {
 private:
     typedef struct _BinaryTree::BinaryTreeNode<T> BinaryTreeNode;
-    typedef class _BinaryTree::iterator<T> iterator;
+    //typedef class _BinaryTree::iterator<T> iterator;
     typedef class _BinaryTree::Inorderiterator<T> inorder_iter;
     typedef class _BinaryTree::Postorderiterator<T> postorder_iter;
-    typedef enum _BinaryTree::iter_order iter_order;
+    typedef class _BinaryTree::Preorderiterator<T> preorder_iter;
+    //typedef enum _BinaryTree::iter_order iter_order;
     BinaryTreeNode *root;
 
     void copy_tree(BinaryTreeNode &target, const BinaryTreeNode &source) {
@@ -85,8 +87,9 @@ public:
 
     BinaryTree &add_right(T parent, T item);
 
-    iterator begin_preorder() {
-        return iterator(iter_order::preorder, root);
+    auto begin_preorder() {
+        return preorder_iter{root};
+        //return iterator(iter_order::preorder, root);
     }
 
     auto begin_postorder() {
@@ -99,8 +102,9 @@ public:
         //return iterator(iter_order::inorder, root);
     }
 
-    iterator end_preorder() {
-        return iterator(iter_order::preorder);
+    auto end_preorder() {
+        return preorder_iter{};
+        //return iterator(iter_order::preorder);
     }
 
     auto end_postorder() {
@@ -113,14 +117,16 @@ public:
         //return iterator(iter_order::inorder);
     }
 
-    iterator begin() {
+    auto begin() {
+        return begin_inorder();
         // return &(m_first->m_value);
-        return iterator{iter_order::inorder, root};
+        //return iterator{iter_order::inorder, root};
     }
 
-    iterator end() {
+    auto end() {
+        return end_inorder();
         // return nullptr;
-        return iterator{iter_order::inorder, nullptr};
+        // return iterator{iter_order::inorder, nullptr};
     }
 
     int getDepth() const {

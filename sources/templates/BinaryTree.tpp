@@ -1,6 +1,6 @@
 #pragma once
 #include "../BinaryTree.hpp"
-#include "BinaryTreeIterator.tpp"
+// #include "BinaryTreeIterator.tpp"
 #include <iostream>
 
 namespace ariel {

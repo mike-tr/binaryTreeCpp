@@ -75,7 +75,7 @@ public:
     }
 
     const Postorderiterator operator++(int) {
-        Inorderiterator tmp = *this;
+        Postorderiterator tmp = *this;
         pstack.pop();
         BinaryTreeNode *curr = pstack.top();
         if (curr->left == current) {
