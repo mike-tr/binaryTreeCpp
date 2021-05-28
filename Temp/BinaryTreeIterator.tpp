@@ -51,6 +51,7 @@ private:
             src = curr;
             pstack.emplace(pathNode{src, true, false});
             curr = src->left;
+            pathNode n = pathNode{src, true, false};
         }
     }
 

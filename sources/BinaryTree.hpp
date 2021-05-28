@@ -136,6 +136,7 @@ public:
             std::swap(quen, que);
             while (que.size() > 0) {
                 BinaryTreeNode *current = que.front();
+
                 que.pop();
 
                 os << addSpaces(k * SPACE_NUM - 2);

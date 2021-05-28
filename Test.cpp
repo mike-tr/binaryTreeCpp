@@ -60,16 +60,16 @@ BinaryTree<T> create_dummy(int adder = 0) {
 template <typename T>
 bool isEqual(BinaryTree<T> &tree, vector<T> const &v2, _order order) {
     // This function checks if a given tree order is equal to some vector.
-    auto end = tree.end_preorder();
     if (order == _order::inorder) {
-        end = tree.end_inorder();
+        auto end = tree.end_inorder();
         auto pair = std::mismatch(tree.begin_inorder(), tree.end_inorder(), v2.begin());
         return (pair.first == end && pair.second == v2.end());
     } else if (order == _order::postorder) {
-        end = tree.end_postorder();
+        auto end = tree.end_postorder();
         auto pair = std::mismatch(tree.begin_postorder(), tree.end_postorder(), v2.begin());
         return (pair.first == end && pair.second == v2.end());
     }
+    auto end = tree.end_preorder();
     auto pair = std::mismatch(tree.begin_preorder(), tree.end_preorder(), v2.begin());
     return (pair.first == end && pair.second == v2.end());
 }
