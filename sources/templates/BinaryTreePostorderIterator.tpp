@@ -36,6 +36,15 @@ private:
         }
     }
 
+    void next() {
+        pstack.pop();
+        BinaryTreeNode *curr = pstack.top();
+        if (curr != nullptr && curr->left == current) {
+            goDownwards(curr->right);
+        }
+        current = pstack.top();
+    }
+
 public:
     Postorderiterator(BinaryTreeNode *ptr = nullptr) {
         current = nullptr;
@@ -65,23 +74,13 @@ public:
 
     // ++i;
     Postorderiterator &operator++() {
-        pstack.pop();
-        BinaryTreeNode *curr = pstack.top();
-        if (curr != nullptr && curr->left == current) {
-            goDownwards(curr->right);
-        }
-        current = pstack.top();
+        next();
         return *this;
     }
 
     const Postorderiterator operator++(int) {
         Postorderiterator tmp = *this;
-        pstack.pop();
-        BinaryTreeNode *curr = pstack.top();
-        if (curr->left == current) {
-            goDownwards(curr->right);
-        }
-        current = pstack.top();
+        next();
         return tmp;
     }
 

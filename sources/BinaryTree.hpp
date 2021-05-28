@@ -64,6 +64,11 @@ public:
         copy_tree(*root, *tree.root);
     }
 
+    BinaryTree(BinaryTree &&tree) noexcept {
+        root = tree.root;
+        tree.root = nullptr;
+    }
+
     BinaryTree &operator=(const BinaryTree &tree) {
         if (this == &tree) {
             return *this;
@@ -74,6 +79,14 @@ public:
         root = new BinaryTreeNode{tree.root->m_value};
         copy_tree(*root, *tree.root);
         return *this;
+    }
+
+    BinaryTree &operator=(BinaryTree &&tree) noexcept {
+        if (root != nullptr) {
+            delete root;
+        }
+        root = tree.root;
+        tree.root = nullptr;
     }
 
     ~BinaryTree() {
