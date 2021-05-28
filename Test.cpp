@@ -175,11 +175,11 @@ TEST_CASE("Test random permutation") {
 
         // generate random tree, but with values that in the vector we created
         // this new tree inorder, postorder and preorder should be a permutation of the vector!
-        for (unsigned int i = 1; i < randomVals.size(); i++) {
+        for (unsigned int k = 1; k < randomVals.size(); k++) {
             if (RandomBool()) {
-                tree.add_left(randomVals[i - 1], randomVals[i]);
+                tree.add_left(randomVals[k - 1], randomVals[k]);
             } else {
-                tree.add_right(randomVals[i - 1], randomVals[i]);
+                tree.add_right(randomVals[k - 1], randomVals[k]);
             }
         }
 

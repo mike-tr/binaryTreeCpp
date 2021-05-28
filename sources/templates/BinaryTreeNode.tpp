@@ -5,6 +5,7 @@
 namespace ariel {
 
 namespace _BinaryTree {
+
 template <typename T>
 struct BinaryTreeNode {
     BinaryTreeNode *left, *right, *parent;

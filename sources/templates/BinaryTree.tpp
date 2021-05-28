@@ -16,7 +16,8 @@ BinaryTree<T> &BinaryTree<T>::add_root(T root) {
 
 template <typename T>
 BinaryTree<T> &BinaryTree<T>::add_left(T parent, T item) {
-    for (iterator it = this->begin_inorder(); it != this->end_inorder(); ++it) {
+    //std::cout << (*this->begin_inorder()) == nullptr << std::endl;
+    for (auto it = this->begin_inorder(); it != this->end_inorder(); ++it) {
         if ((*it) == parent) {
             BinaryTreeNode *p = it.current;
             if (p->left == nullptr) {
@@ -32,7 +33,7 @@ BinaryTree<T> &BinaryTree<T>::add_left(T parent, T item) {
 
 template <typename T>
 BinaryTree<T> &BinaryTree<T>::add_right(T parent, T item) {
-    for (iterator it = this->begin_inorder(); it != this->end_inorder(); ++it) {
+    for (auto it = this->begin_inorder(); it != this->end_inorder(); ++it) {
         if ((*it) == parent) {
             BinaryTreeNode *p = it.current;
             if (p->right == nullptr) {

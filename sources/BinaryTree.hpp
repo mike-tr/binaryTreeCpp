@@ -1,7 +1,9 @@
 #pragma once
 
+#include "templates/BinaryTreeInorderIterator.tpp"
 #include "templates/BinaryTreeIterator.tpp"
 #include "templates/BinaryTreeNode.tpp"
+#include "templates/BinaryTreePostorderIterator.tpp"
 #include <iostream>
 #include <queue>
 
@@ -21,6 +23,8 @@ class BinaryTree {
 private:
     typedef struct _BinaryTree::BinaryTreeNode<T> BinaryTreeNode;
     typedef class _BinaryTree::iterator<T> iterator;
+    typedef class _BinaryTree::Inorderiterator<T> inorder_iter;
+    typedef class _BinaryTree::Postorderiterator<T> postorder_iter;
     typedef enum _BinaryTree::iter_order iter_order;
     BinaryTreeNode *root;
 
@@ -85,24 +89,28 @@ public:
         return iterator(iter_order::preorder, root);
     }
 
-    iterator begin_postorder() {
-        return iterator(iter_order::postorder, root);
+    auto begin_postorder() {
+        return postorder_iter{root};
+        //return iterator(iter_order::postorder, root);
     }
 
-    iterator begin_inorder() {
-        return iterator(iter_order::inorder, root);
+    auto begin_inorder() {
+        return inorder_iter{root};
+        //return iterator(iter_order::inorder, root);
     }
 
     iterator end_preorder() {
         return iterator(iter_order::preorder);
     }
 
-    iterator end_postorder() {
-        return iterator(iter_order::postorder);
+    auto end_postorder() {
+        return postorder_iter{};
+        //return iterator(iter_order::postorder);
     }
 
-    iterator end_inorder() {
-        return iterator(iter_order::inorder);
+    auto end_inorder() {
+        return inorder_iter{};
+        //return iterator(iter_order::inorder);
     }
 
     iterator begin() {
