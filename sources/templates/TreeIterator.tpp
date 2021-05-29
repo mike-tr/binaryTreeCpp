@@ -14,7 +14,7 @@ namespace _BinaryTree {
 
 // Y is the typename of the inheriting object.
 // T for the type of value we store in the tree.
-template <typename T, typename Y>
+template <typename T, typename cIterator>
 class TreeIterator {
 
 protected:
@@ -34,21 +34,25 @@ public:
     }
 
     // a function that return *this from the inheriting class.
-    virtual Y *cThis() {
+    virtual cIterator *cThis() {
         return nullptr;
     }
 
     // ++i;
-    Y &operator++() {
+    cIterator &operator++() {
         next();
         return *cThis();
     }
 
     //i++;
-    const Y operator++(int) {
-        Y tmp = *cThis();
+    const cIterator operator++(int) {
+        cIterator tmp = *cThis();
         next();
         return tmp;
+    }
+
+    TreeIterator kek() {
+        return *this;
     }
 
     //is equal we care only about current iterator value.
