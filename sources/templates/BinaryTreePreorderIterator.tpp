@@ -21,6 +21,7 @@ private:
 
 protected:
     // increment iterator method.
+    // we traverse current, then left then right.
     void next() {
         if (this->current->right != nullptr) {
             pstack.push(this->current->right);
@@ -39,7 +40,9 @@ public:
             return;
         }
 
+        // set the last iter value to be nullptr
         pstack.push(nullptr);
+        // the root of the tree is the starting value.
         this->current = ptr;
     }
 

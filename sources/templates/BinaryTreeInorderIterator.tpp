@@ -37,6 +37,8 @@ private:
 
 protected:
     // increment iterator method.
+    // when we are done with a node, we check if it has a right child
+    // if there is one, find its most left child and go there.
     void next() {
         goLeft(this->current->right);
         this->current = pstack.top();
@@ -50,11 +52,13 @@ public:
             return;
         }
 
+        // set the last "value" to be nullptr
         pstack.push(nullptr);
+
+        // find the left most node and set the iterator to point to it.
         goLeft(ptr);
         this->current = pstack.top();
         pstack.pop();
-        //std::cout << "done with ini" << std::endl;
     }
 
     Inorderiterator(const Inorderiterator &copy) {

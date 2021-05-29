@@ -37,6 +37,9 @@ private:
 
 protected:
     // increment iterator method.
+    // the current object is always a leaf so we go back one,
+    // if we are a left leaf, maybe there is a path to the right of the current node,
+    // so we check that out first.
     void next() {
         BinaryTreeNode *curr = pstack.top();
         if (curr != nullptr && curr->left == this->current) {
@@ -53,7 +56,9 @@ public:
             return;
         }
 
+        // set the last value of the iterator to nullptr
         pstack.push(nullptr);
+        // find the left most "leaf" on the tree, and point the iterator to it.
         goDownwards(ptr);
         this->current = pstack.top();
         pstack.pop();

@@ -13,27 +13,22 @@ class BinaryTree;
 namespace _BinaryTree {
 
 // Y is the typename of the inheriting object.
+// T for the type of value we store in the tree.
 template <typename T, typename Y>
 class TreeIterator {
 
 protected:
     typedef struct _BinaryTree::BinaryTreeNode<T> BinaryTreeNode;
     BinaryTreeNode *current;
-    virtual void next(){
-        //std::cout << "this should not be called" << endl;
-    }; /* needs implementation */
+    virtual void next(){}; /* needs implementation */
 
 public:
-    //MyIterator(BinaryTreeNode *ptr = nullptr);
-
-    // TreeIterator(const TreeIterator &old) {
-    //     this->current = old.current;
-    // }
-
+    // return the value of the node
     T &operator*() const {
         return this->current->m_value;
     }
 
+    // the -> operator on the value of the node.
     T *operator->() const {
         return &(this->current->m_value);
     }
@@ -49,21 +44,22 @@ public:
         return *cThis();
     }
 
+    //i++;
     const Y operator++(int) {
         Y tmp = *cThis();
         next();
         return tmp;
     }
 
+    //is equal we care only about current iterator value.
     bool operator==(const TreeIterator &rhs) const {
         return this->current == rhs.current;
     }
 
+    // same but neq.
     bool operator!=(const TreeIterator &rhs) const {
         return this->current != rhs.current;
     }
-
-    //friend class ariel::BinaryTree<T>;
 };
 } // namespace _BinaryTree
 } // namespace ariel
