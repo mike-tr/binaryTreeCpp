@@ -1,6 +1,7 @@
 #pragma once
 // #include "../BinaryTree.hpp"
 #include "BinaryTreeNode.tpp"
+#include "TreeIterator.tpp"
 #include <iostream>
 #include <stack>
 #include <vector>
@@ -13,13 +14,11 @@ class BinaryTree;
 namespace _BinaryTree {
 
 template <typename T>
-class Postorderiterator {
+class Postorderiterator : public TreeIterator<T, Postorderiterator<T>> {
 
 private:
     typedef struct _BinaryTree::BinaryTreeNode<T> BinaryTreeNode;
-
     std::stack<BinaryTreeNode *> pstack;
-    BinaryTreeNode *current;
 
     void goDownwards(BinaryTreeNode *cnode) {
         // get to the left most leaf.
@@ -36,26 +35,28 @@ private:
         }
     }
 
+protected:
+    // increment iterator method.
     void next() {
-        pstack.pop();
         BinaryTreeNode *curr = pstack.top();
-        if (curr != nullptr && curr->left == current) {
+        if (curr != nullptr && curr->left == this->current) {
             goDownwards(curr->right);
         }
-        current = pstack.top();
+        this->current = pstack.top();
+        pstack.pop();
     }
 
 public:
     Postorderiterator(BinaryTreeNode *ptr = nullptr) {
-        current = nullptr;
         if (ptr == nullptr) {
-            current = nullptr;
+            this->current = nullptr;
             return;
         }
 
         pstack.push(nullptr);
         goDownwards(ptr);
-        current = pstack.top();
+        this->current = pstack.top();
+        pstack.pop();
         //std::cout << "done with ini : " << current->m_value << std::endl;
     }
 
@@ -64,32 +65,9 @@ public:
         this->current = copy.current;
     }
 
-    T &operator*() const {
-        return current->m_value;
-    }
-
-    T *operator->() const {
-        return &(current->m_value);
-    }
-
-    // ++i;
-    Postorderiterator &operator++() {
-        next();
-        return *this;
-    }
-
-    const Postorderiterator operator++(int) {
-        Postorderiterator tmp = *this;
-        next();
-        return tmp;
-    }
-
-    bool operator==(const Postorderiterator &rhs) const {
-        return current == rhs.current;
-    }
-
-    bool operator!=(const Postorderiterator &rhs) const {
-        return current != rhs.current;
+    // this used as *this for the TreePointer
+    Postorderiterator *cThis() {
+        return this;
     }
 
     friend class ariel::BinaryTree<T>;

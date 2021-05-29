@@ -1,6 +1,7 @@
 #pragma once
 // #include "../BinaryTree.hpp"
 #include "BinaryTreeNode.tpp"
+#include "TreeIterator.tpp"
 #include <iostream>
 #include <stack>
 #include <vector>
@@ -13,13 +14,13 @@ class BinaryTree;
 namespace _BinaryTree {
 
 template <typename T>
-class Inorderiterator {
+class Inorderiterator : public TreeIterator<T, Inorderiterator<T>> {
 
 private:
     typedef struct _BinaryTree::BinaryTreeNode<T> BinaryTreeNode;
 
     std::stack<BinaryTreeNode *> pstack;
-    BinaryTreeNode *current;
+    //BinaryTreeNode *current;
 
     void goLeft(BinaryTreeNode *cnode) {
         if (cnode == nullptr) {
@@ -34,17 +35,25 @@ private:
         }
     }
 
+protected:
+    // increment iterator method.
+    void next() {
+        goLeft(this->current->right);
+        this->current = pstack.top();
+        pstack.pop();
+    }
+
 public:
     Inorderiterator(BinaryTreeNode *ptr = nullptr) {
-        current = nullptr;
         if (ptr == nullptr) {
-            current = nullptr;
+            this->current = nullptr;
             return;
         }
 
         pstack.push(nullptr);
         goLeft(ptr);
-        current = pstack.top();
+        this->current = pstack.top();
+        pstack.pop();
         //std::cout << "done with ini" << std::endl;
     }
 
@@ -53,36 +62,9 @@ public:
         this->current = copy.current;
     }
 
-    T &operator*() const {
-        return current->m_value;
-    }
-
-    T *operator->() const {
-        return &(current->m_value);
-    }
-
-    // ++i;
-    Inorderiterator &operator++() {
-        pstack.pop();
-        goLeft(current->right);
-        current = pstack.top();
-        return *this;
-    }
-
-    const Inorderiterator operator++(int) {
-        Inorderiterator tmp = *this;
-        pstack.pop();
-        goLeft(current->right);
-        current = pstack.top();
-        return tmp;
-    }
-
-    bool operator==(const Inorderiterator &rhs) const {
-        return current == rhs.current;
-    }
-
-    bool operator!=(const Inorderiterator &rhs) const {
-        return current != rhs.current;
+    // this used as *this for the TreePointer
+    Inorderiterator *cThis() {
+        return this;
     }
 
     friend class ariel::BinaryTree<T>;
