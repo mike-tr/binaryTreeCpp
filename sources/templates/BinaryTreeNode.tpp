@@ -8,9 +8,9 @@ namespace _BinaryTree {
 
 template <typename T>
 struct BinaryTreeNode {
-    BinaryTreeNode *left, *right, *parent;
+    BinaryTreeNode *left, *right;
     T m_value;
-    BinaryTreeNode(const T &val) : m_value(val), parent(nullptr), left(nullptr), right(nullptr) {}
+    BinaryTreeNode(const T &val) : m_value(val), left(nullptr), right(nullptr) {}
 
     ~BinaryTreeNode() {
         //std::cout << "destroyed : " << m_value << std::endl;
